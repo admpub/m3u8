@@ -19,9 +19,12 @@ func (c TVGParams) String() string {
 }
 
 func tvgParse(line string) TVGParams {
-	result := TVGParams{}
 	//tvg-id="CCTVPlus1.cn" tvg-country="CN" tvg-language="Chinese" tvg-logo="" group-title=""
 	matches := tvgParamRegexp.FindAllStringSubmatch(line, -1)
+	if len(matches) == 0 {
+		return nil
+	}
+	result := TVGParams{}
 	for _, vals := range matches {
 		key := vals[1]
 		val := vals[2]
