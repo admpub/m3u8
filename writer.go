@@ -696,7 +696,7 @@ func (p *MediaPlaylist) Encode() *bytes.Buffer {
 			}
 			p.buf.WriteString(durationCache[seg.Duration])
 		}
-		if seg.TVG != nil {
+		if seg.TVG != nil && len(seg.TVG) > 0 {
 			p.buf.WriteRune(' ')
 			p.buf.WriteString(seg.TVG.String())
 		}
