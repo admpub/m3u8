@@ -50,8 +50,11 @@ func infParse(line string) (tvg TVGParams, inf INFParams) {
 	}
 	tvg = TVGParams{}
 	for k, v := range out {
-		if strings.HasPrefix(k, `tvg-`) {
-			tvg[k] = v
+		if len(k) < 5 {
+			continue
+		}
+		if k[0:4] == `tvg-` {
+			tvg[k[4:]] = v
 			delete(out, k)
 		}
 	}
