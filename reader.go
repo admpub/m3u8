@@ -484,6 +484,8 @@ func decodeLineOfMediaPlaylist(p *MediaPlaylist, wv *WV, state *decodingState, l
 		}
 		duration := line[8:sepIndex]
 		if len(duration) > 0 {
+			duration = strings.TrimSpace(duration)
+			duration = strings.SplitN(duration, ` `, 2)[0]
 			if state.duration, err = strconv.ParseFloat(duration, 64); strict && err != nil {
 				return fmt.Errorf("Duration parsing error: %s", err)
 			}

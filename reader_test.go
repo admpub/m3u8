@@ -12,6 +12,7 @@ package m3u8
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -150,6 +151,37 @@ func TestDecodeMediaPlaylistByteRange(t *testing.T) {
 		{URI: "video.ts", Duration: 10, Limit: 82112, Offset: 752321, SeqId: 1},
 		{URI: "video.ts", Duration: 10, Limit: 69864, SeqId: 2},
 	}
+	for i, seg := range p.Segments {
+		if !reflect.DeepEqual(*seg, *expected[i]) {
+			t.Errorf("exp: %+v\ngot: %+v", expected[i], seg)
+		}
+	}
+}
+
+func TestDecodeMediaPlaylistTVG(t *testing.T) {
+	f, err := os.Open("sample-playlists/media-playlist-with-tvg.m3u8")
+	if err != nil {
+		panic(err)
+	}
+	p, err := NewMediaPlaylist(3, 3)
+	if err != nil {
+		panic(err)
+	}
+	err = p.DecodeFrom(bufio.NewReader(f), true)
+	if err != nil {
+		panic(err)
+	}
+	expected := []*MediaSegment{
+		{URI: "video.ts", Duration: 10, Limit: 75232, SeqId: 0, TVG: TVGParams{
+			"country":  "CN",
+			"id":       "CCTVPlus1.cn",
+			"language": "Chinese",
+		}},
+		{URI: "video.ts", Duration: 10, Limit: 82112, Offset: 752321, SeqId: 1},
+		{URI: "video.ts", Duration: 10, Limit: 69864, SeqId: 2},
+	}
+	b, _ := json.MarshalIndent(p, ``, `  `)
+	fmt.Println(string(b))
 	for i, seg := range p.Segments {
 		if !reflect.DeepEqual(*seg, *expected[i]) {
 			t.Errorf("exp: %+v\ngot: %+v", expected[i], seg)
