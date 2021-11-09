@@ -72,3 +72,9 @@ func MediaSegmentTVG(tvg TVGParams) func(*MediaSegment) {
 		seg.TVG = tvg
 	}
 }
+
+func MediaSegmentINF(params INFParams) func(*MediaSegment) {
+	return func(seg *MediaSegment) {
+		seg.Params = params
+	}
+}

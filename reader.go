@@ -493,10 +493,10 @@ func decodeLineOfMediaPlaylist(p *MediaPlaylist, wv *WV, state *decodingState, l
 		if len(line) > sepIndex {
 			state.title = line[sepIndex+1:]
 		}
-		state.tvg = tvgParse(line) // added by admpub
+		state.tvg, state.params = infParse(line) // added by admpub
 	case !strings.HasPrefix(line, "#"):
 		if state.tagInf {
-			err := p.Append(line, state.duration, state.title, MediaSegmentTVG(state.tvg))
+			err := p.Append(line, state.duration, state.title, MediaSegmentTVG(state.tvg), MediaSegmentINF(state.params))
 			if err == ErrPlaylistFull {
 				// Extend playlist by doubling size, reset internal state, try again.
 				// If the second Append fails, the if err block will handle it.
@@ -505,7 +505,7 @@ func decodeLineOfMediaPlaylist(p *MediaPlaylist, wv *WV, state *decodingState, l
 				p.Segments = append(p.Segments, make([]*MediaSegment, p.Count())...)
 				p.capacity = uint(len(p.Segments))
 				p.tail = p.count
-				err = p.Append(line, state.duration, state.title, MediaSegmentTVG(state.tvg))
+				err = p.Append(line, state.duration, state.title, MediaSegmentTVG(state.tvg), MediaSegmentINF(state.params))
 			}
 			// Check err for first or subsequent Append()
 			if err != nil {

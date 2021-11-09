@@ -216,6 +216,7 @@ type MediaSegment struct {
 	ProgramDateTime time.Time // EXT-X-PROGRAM-DATE-TIME tag associates the first sample of a media segment with an absolute date and/or time
 	Custom          map[string]CustomTag
 	TVG             TVGParams // added by admpub
+	Params          INFParams // added by admpub
 }
 
 // SCTE holds custom, non EXT-X-DATERANGE, SCTE-35 tags
@@ -334,4 +335,5 @@ type decodingState struct {
 	scte               *SCTE
 	custom             map[string]CustomTag
 	tvg                TVGParams // added by admpub
+	params             INFParams // added by admpub
 }

@@ -700,6 +700,10 @@ func (p *MediaPlaylist) Encode() *bytes.Buffer {
 			p.buf.WriteRune(' ')
 			p.buf.WriteString(seg.TVG.String())
 		}
+		if seg.Params != nil && len(seg.Params) > 0 {
+			p.buf.WriteRune(' ')
+			p.buf.WriteString(seg.Params.String())
+		}
 		p.buf.WriteRune(',')
 		p.buf.WriteString(seg.Title)
 		p.buf.WriteRune('\n')

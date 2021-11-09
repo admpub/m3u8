@@ -172,11 +172,17 @@ func TestDecodeMediaPlaylistTVG(t *testing.T) {
 		panic(err)
 	}
 	expected := []*MediaSegment{
-		{URI: "video.ts", Duration: 10, Limit: 75232, SeqId: 0, TVG: TVGParams{
-			"country":  "CN",
-			"id":       "CCTVPlus1.cn",
-			"language": "Chinese",
-		}},
+		{
+			URI: "video.ts", Duration: 10, Limit: 75232, SeqId: 0,
+			TVG: TVGParams{
+				"country":  "CN",
+				"id":       "CCTVPlus1.cn",
+				"language": "Chinese",
+			},
+			Params: INFParams{
+				"group-title": "China",
+			},
+		},
 		{URI: "video.ts", Duration: 10, Limit: 82112, Offset: 752321, SeqId: 1},
 		{URI: "video.ts", Duration: 10, Limit: 69864, SeqId: 2},
 	}
