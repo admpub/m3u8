@@ -167,7 +167,7 @@ func TestDecodeMediaPlaylistTVG(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	err = p.DecodeFrom(bufio.NewReader(f), true)
+	err = p.DecodeFrom(bufio.NewReader(f), false)
 	if err != nil {
 		panic(err)
 	}
@@ -183,16 +183,20 @@ func TestDecodeMediaPlaylistTVG(t *testing.T) {
 				"group-title": "China",
 			},
 		},
-		{URI: "video.ts", Duration: 10, Limit: 82112, Offset: 752321, SeqId: 1},
-		{URI: "video.ts", Duration: 10, Limit: 69864, SeqId: 2},
+		{URI: "video1.ts", Duration: 10, Limit: 82112, Offset: 752321, SeqId: 1},
+		{URI: "video2.ts", Duration: 10, Limit: 69864, SeqId: 2},
 	}
-	b, _ := json.MarshalIndent(p, ``, `  `)
-	fmt.Println(string(b))
+	//dump(p.Segments)
 	for i, seg := range p.Segments {
 		if !reflect.DeepEqual(*seg, *expected[i]) {
-			t.Errorf("exp: %+v\ngot: %+v", expected[i], seg)
+			t.Errorf("\nexp: %+v\ngot: %+v", expected[i], seg)
 		}
 	}
+}
+
+func dump(d interface{}) {
+	b, _ := json.MarshalIndent(d, ``, `  `)
+	fmt.Println(string(b))
 }
 
 // Decode a master playlist with i-frame-stream-inf
@@ -421,6 +425,8 @@ func TestDecodeMediaPlaylistExtInfNonStrict2(t *testing.T) {
 		if err != nil {
 			t.Errorf("unexpected error: %v", err)
 		}
+		//fmt.Println(fmt.Sprintf(header, test.extInf))
+		//dump(p.Segments)
 		if !reflect.DeepEqual(p.Segments[0], test.wantSegment) {
 			t.Errorf("\nhave: %+v\nwant: %+v", p.Segments[0], test.wantSegment)
 		}

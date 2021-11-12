@@ -73,9 +73,19 @@ func (p *MasterPlaylist) decode(buf *bytes.Buffer, strict bool) error {
 		} else if err != nil {
 			break
 		}
+		line = strings.TrimSpace(line)
+		if !eof && len(line) < 1 {
+			continue
+		}
 		err = decodeLineOfMasterPlaylist(p, state, line, strict)
 		if strict && err != nil {
 			return err
+		}
+		if eof && len(line) > 0 {
+			err = decodeLineOfMasterPlaylist(p, state, ``, strict)
+			if strict && err != nil {
+				return err
+			}
 		}
 	}
 	if strict && !state.m3u {
@@ -128,12 +138,20 @@ func (p *MediaPlaylist) decode(buf *bytes.Buffer, strict bool) error {
 		} else if err != nil {
 			break
 		}
-
+		line = strings.TrimSpace(line)
+		if !eof && len(line) < 1 {
+			continue
+		}
 		err = decodeLineOfMediaPlaylist(p, wv, state, line, strict)
 		if strict && err != nil {
 			return err
 		}
-
+		if eof && len(line) > 0 {
+			err = decodeLineOfMediaPlaylist(p, wv, state, ``, strict)
+			if strict && err != nil {
+				return err
+			}
+		}
 	}
 	if state.tagWV {
 		p.WV = wv
@@ -212,10 +230,8 @@ func decode(buf *bytes.Buffer, strict bool, customDecoders []CustomDecoder) (Pla
 			break
 		}
 
-		// fixes the issues https://github.com/grafov/m3u8/issues/25
-		// TODO: the same should be done in decode functions of both Master- and MediaPlaylists
-		// so some DRYing would be needed.
-		if len(line) < 1 || line == "\r" {
+		line = strings.TrimSpace(line)
+		if !eof && len(line) < 1 {
 			continue
 		}
 
@@ -229,6 +245,17 @@ func decode(buf *bytes.Buffer, strict bool, customDecoders []CustomDecoder) (Pla
 			return media, state.listType, err
 		}
 
+		if eof && len(line) > 0 {
+			err = decodeLineOfMasterPlaylist(master, state, ``, strict)
+			if strict && err != nil {
+				return master, state.listType, err
+			}
+
+			err = decodeLineOfMediaPlaylist(media, wv, state, ``, strict)
+			if strict && err != nil {
+				return media, state.listType, err
+			}
+		}
 	}
 	if state.listType == MEDIA && state.tagWV {
 		media.WV = wv
@@ -269,8 +296,6 @@ func decodeParamsLine(line string) map[string]string {
 // Parse one line of master playlist.
 func decodeLineOfMasterPlaylist(p *MasterPlaylist, state *decodingState, line string, strict bool) error {
 	var err error
-
-	line = strings.TrimSpace(line)
 
 	// check for custom tags first to allow custom parsing of existing tags
 	if p.Custom != nil {
@@ -448,11 +473,6 @@ func decodeLineOfMasterPlaylist(p *MasterPlaylist, state *decodingState, line st
 // Parse one line of media playlist.
 func decodeLineOfMediaPlaylist(p *MediaPlaylist, wv *WV, state *decodingState, line string, strict bool) error {
 	var err error
-
-	line = strings.TrimSpace(line)
-	if len(line) == 0 {
-		return err
-	}
 
 	// check for custom tags first to allow custom parsing of existing tags
 	if p.Custom != nil {
