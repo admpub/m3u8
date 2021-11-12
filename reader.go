@@ -450,6 +450,9 @@ func decodeLineOfMediaPlaylist(p *MediaPlaylist, wv *WV, state *decodingState, l
 	var err error
 
 	line = strings.TrimSpace(line)
+	if len(line) == 0 {
+		return err
+	}
 
 	// check for custom tags first to allow custom parsing of existing tags
 	if p.Custom != nil {
