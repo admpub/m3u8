@@ -2,35 +2,17 @@ package m3u8
 
 import (
 	"fmt"
-	"regexp"
 	"strings"
 )
-
-var tvgParamRegexp = regexp.MustCompile(`tvg-([a-z]+)="([^"]+)"`)
 
 type TVGParams map[string]string
 
 func (c TVGParams) String() string {
 	var encoded []string
 	for k, v := range c {
-		encoded = append(encoded, `tvg-`+k+`=`+fmt.Sprintf(`%q`, v))
+		encoded = append(encoded, k+`=`+fmt.Sprintf(`%q`, v))
 	}
 	return strings.Join(encoded, ` `)
-}
-
-func tvgParse(line string) TVGParams {
-	//tvg-id="CCTVPlus1.cn" tvg-country="CN" tvg-language="Chinese" tvg-logo="" group-title=""
-	matches := tvgParamRegexp.FindAllStringSubmatch(line, -1)
-	if len(matches) == 0 {
-		return nil
-	}
-	result := TVGParams{}
-	for _, vals := range matches {
-		key := vals[1]
-		val := vals[2]
-		result[key] = val
-	}
-	return result
 }
 
 type INFParams map[string]string
@@ -53,8 +35,8 @@ func infParse(line string) (tvg TVGParams, inf INFParams) {
 		if len(k) < 5 {
 			continue
 		}
-		if k[0:4] == `tvg-` {
-			tvg[k[4:]] = v
+		if strings.HasPrefix(k, `tvg-`) || strings.HasPrefix(k, `x-tvg-`) {
+			tvg[k] = v
 			delete(out, k)
 		}
 	}

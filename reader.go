@@ -269,7 +269,7 @@ func decode(buf *bytes.Buffer, strict bool, customDecoders []CustomDecoder) (Pla
 	case MASTER:
 		return master, MASTER, nil
 	case MEDIA:
-		if media.Closed || media.MediaType == EVENT {
+		if media.Closed || media.MediaType == EVENT || media.TargetDuration == 0 {
 			// VoD and Event's should show the entire playlist
 			media.SetWinSize(0)
 		}
@@ -313,8 +313,11 @@ func decodeLineOfMasterPlaylist(p *MasterPlaylist, state *decodingState, line st
 	}
 
 	switch {
-	case line == "#EXTM3U": // start tag first
+	case line == "#EXTM3U" || strings.HasPrefix(line, "#EXTM3U "): // start tag first
 		state.m3u = true
+		if line != "#EXTM3U" {
+			p.Params = TVGParams(decodeParamsLine(line))
+		}
 	case strings.HasPrefix(line, "#EXT-X-VERSION:"): // version tag
 		state.listType = MASTER
 		_, err = fmt.Sscanf(line, "#EXT-X-VERSION:%d", &p.ver)
@@ -596,8 +599,11 @@ func decodeLineOfMediaPlaylist(p *MediaPlaylist, wv *WV, state *decodingState, l
 			state.daterange = []*DateRange{}
 		}
 	// start tag first
-	case line == "#EXTM3U":
+	case line == "#EXTM3U" || strings.HasPrefix(line, "#EXTM3U "):
 		state.m3u = true
+		if line != "#EXTM3U" {
+			p.Params = TVGParams(decodeParamsLine(line))
+		}
 	case line == "#EXT-X-ENDLIST":
 		state.listType = MEDIA
 		p.Closed = true

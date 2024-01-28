@@ -415,7 +415,13 @@ func (p *MediaPlaylist) Encode() *bytes.Buffer {
 		return &p.buf
 	}
 
-	p.buf.WriteString("#EXTM3U\n#EXT-X-VERSION:")
+	p.buf.WriteString("#EXTM3U")
+	if p.Params != nil && len(p.Params) > 0 {
+		p.buf.WriteRune(' ')
+		p.buf.WriteString(p.Params.String())
+	}
+	p.buf.WriteString("\n")
+	p.buf.WriteString("#EXT-X-VERSION:")
 	p.buf.WriteString(strver(p.ver))
 	p.buf.WriteRune('\n')
 
@@ -481,9 +487,11 @@ func (p *MediaPlaylist) Encode() *bytes.Buffer {
 	p.buf.WriteString("#EXT-X-MEDIA-SEQUENCE:")
 	p.buf.WriteString(strconv.FormatUint(p.SeqNo, 10))
 	p.buf.WriteRune('\n')
-	p.buf.WriteString("#EXT-X-TARGETDURATION:")
-	p.buf.WriteString(strconv.FormatInt(int64(math.Ceil(p.TargetDuration)), 10)) // due section 3.4.2 of M3U8 specs EXT-X-TARGETDURATION must be integer
-	p.buf.WriteRune('\n')
+	if p.TargetDuration > 0 {
+		p.buf.WriteString("#EXT-X-TARGETDURATION:")
+		p.buf.WriteString(strconv.FormatInt(int64(math.Ceil(p.TargetDuration)), 10)) // due section 3.4.2 of M3U8 specs EXT-X-TARGETDURATION must be integer
+		p.buf.WriteRune('\n')
+	}
 	if p.StartTime > 0.0 {
 		p.buf.WriteString("#EXT-X-START:TIME-OFFSET=")
 		p.buf.WriteString(strconv.FormatFloat(p.StartTime, 'f', -1, 64))

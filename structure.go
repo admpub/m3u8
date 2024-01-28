@@ -130,6 +130,7 @@ type MediaPlaylist struct {
 	WV               *WV  // Widevine related tags outside of M3U8 specs
 	Custom           map[string]CustomTag
 	customDecoders   []CustomDecoder
+	Params           TVGParams
 }
 
 // MasterPlaylist structure represents a master playlist which
@@ -154,6 +155,7 @@ type MasterPlaylist struct {
 	independentSegments bool
 	Custom              map[string]CustomTag
 	customDecoders      []CustomDecoder
+	Params              TVGParams
 }
 
 // Variant structure represents variants for master playlist.

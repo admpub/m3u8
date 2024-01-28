@@ -175,9 +175,9 @@ func TestDecodeMediaPlaylistTVG(t *testing.T) {
 		{
 			URI: "video.ts", Duration: 10, Limit: 75232, SeqId: 0,
 			TVG: TVGParams{
-				"country":  "CN",
-				"id":       "CCTVPlus1.cn",
-				"language": "Chinese",
+				"tvg-country":  "CN",
+				"tvg-id":       "CCTVPlus1.cn",
+				"tvg-language": "Chinese",
 			},
 			Params: INFParams{
 				"group-title": "China",
