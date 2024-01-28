@@ -734,7 +734,7 @@ func decodeLineOfMediaPlaylist(p *MediaPlaylist, wv *WV, state *decodingState, l
 		state.tagRange = true
 		state.listType = MEDIA
 		state.offset = 0
-		params := strings.SplitN(line[17:], "@", 2)
+		params := strings.SplitN(strings.Trim(line[17:], `"`), "@", 2)
 		if state.limit, err = strconv.ParseInt(params[0], 10, 64); strict && err != nil {
 			return fmt.Errorf("Byterange sub-range length value parsing error: %s", err)
 		}
