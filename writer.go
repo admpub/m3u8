@@ -75,7 +75,13 @@ func (p *MasterPlaylist) Encode() *bytes.Buffer {
 		return &p.buf
 	}
 
-	p.buf.WriteString("#EXTM3U\n#EXT-X-VERSION:")
+	p.buf.WriteString("#EXTM3U")
+	if p.Params != nil && len(p.Params) > 0 {
+		p.buf.WriteRune(' ')
+		p.buf.WriteString(p.Params.String())
+	}
+	p.buf.WriteString("\n")
+	p.buf.WriteString("#EXT-X-VERSION:")
 	p.buf.WriteString(strver(p.ver))
 	p.buf.WriteRune('\n')
 
