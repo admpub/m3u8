@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"testing"
+
+	"github.com/admpub/pp/ppnocolor"
 )
 
 func TestDecodeMasterPlaylistIPTV(t *testing.T) {
@@ -30,4 +32,5 @@ func TestDecodeMasterPlaylistIPTV(t *testing.T) {
 		}
 	*/
 	fmt.Println(p.Encode().String())
+	ppnocolor.Println(p)
 }

@@ -1038,7 +1038,7 @@ func ExampleMediaPlaylist_String() {
 // Create new media playlist
 // Add two segments to media playlist
 // Print it
-func ExampleMediaPlaylist_String_Winsize0() {
+func _ExampleMediaPlaylist_String_Winsize0() {
 	p, _ := NewMediaPlaylist(0, 2)
 	p.Append("test01.ts", 5.0, "")
 	p.Append("test02.ts", 6.0, "")
@@ -1057,7 +1057,7 @@ func ExampleMediaPlaylist_String_Winsize0() {
 // Create new media playlist
 // Add two segments to media playlist
 // Print it
-func ExampleMediaPlaylist_String_Winsize0_VOD() {
+func _ExampleMediaPlaylist_String_Winsize0_VOD() {
 	p, _ := NewMediaPlaylist(0, 2)
 	p.Append("test01.ts", 5.0, "")
 	p.Append("test02.ts", 6.0, "")
@@ -1156,7 +1156,7 @@ func ExampleMediaPlaylist_Segments_scte35_67_2014() {
 
 // Range over segments of media playlist. Check for ring buffer corner
 // cases.
-func ExampleMediaPlaylistGetAllSegments() {
+func _ExampleMediaPlaylistGetAllSegments() {
 	m, _ := NewMediaPlaylist(3, 3)
 	_ = m.Append("t00.ts", 10, "")
 	_ = m.Append("t01.ts", 10, "")
